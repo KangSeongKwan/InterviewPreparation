@@ -205,6 +205,20 @@
 - 이를 활용한 이진 탐색 트리도 존재한다.
 - 이진 탐색 트리 : 모든 노드가 모든 왼쪽 자식들 <= n < 모든 오른쪽 자식들(모든 노드 n에 대해서 반드시 성립해야 한다는 특징)을 가진 트리
 
+### 4-11. 레드-블랙 트리란?
+- 자가 균형 이진 탐색 트리이다. 다음 조건들을 만족한다.  
+![image](https://user-images.githubusercontent.com/99636945/210125355-c4c7a0cd-8572-4ff2-a1fe-e51c019ab8e0.png)
+- 삽입 시 Double Red 현상이 발생하지 않기 위해 발생한 상황을 가정한다.
+![image](https://user-images.githubusercontent.com/99636945/210125411-f77065bc-6110-442b-b64d-823361d27f7c.png)
+- 새로 삽입할 노드를 N, 부모 노드를 P, 조상 노드를 G, 삼촌 노드를 U(부모의 형제노드이다.)라고 가정한다.
+- 다음 두 가지 방법을 활용한다.
+![image](https://user-images.githubusercontent.com/99636945/210125432-62c9e769-29e9-4b4c-891c-31d5ef9f1f06.png)
+- Restructing은 다음과 같은 과정을 거친다.
+![image](https://user-images.githubusercontent.com/99636945/210125440-acfe3c6b-d341-4641-b306-d3810bb4aba9.png)
+- Recoloring은 다음과 같은 과정을 거친다.  
+![image](https://user-images.githubusercontent.com/99636945/210125507-7d26acf3-7067-49f4-ac18-b245a9c378d8.png)
+- 중요한 것은 double red만 발생하지 않으면 될 뿐, black은 여러 번 나와도 괜찮다는 점이다.
+
 # 5. OS
 - 사용자가 컴퓨터 하드웨어를 효율적으로 운용할 수 있도록 인터페이스를 제공하는 시스템 소프트웨어
 - 하드웨어, 소프트웨어 리소스를 관리하고 프로그램을 위한 서비스를 제공
