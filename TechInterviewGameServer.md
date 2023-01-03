@@ -685,10 +685,46 @@
 - volatile 키워드는 Memory-mapped 입출력, 인터럽트 서비스 루틴 사용, 멀티쓰레드 환경 등에서 흔히 사용된다.
 
 ### 17-3. 커널 모드 동기화
+- 유저 모드 동기화에 비하면 느리다.
+- 유저 -> 커널, 커널 -> 유저의 전환이 필요하기 때문이다.
+- Windows 커널 레벨에서 제공해주는 동기화 기법은 유저 모드 동기화에서 제공해주지 못하는 기능을 제공받을 수 있다.
+
+#### 17-3.1 뮤텍스 기반 동기화
 - 뮤텍스 기반 동기화 기법의 경우 화장실 열쇠에 비유되는 뮤텍스 오브젝트이고, 크리티컬 섹션과 다르게 다음 함수를 통해 만들어진다.
 ![image](https://user-images.githubusercontent.com/99636945/210304863-db4f3982-7e42-405d-8d29-cddf98c0fc3e.png)
+- 뮤텍스는 커널 오브젝트이기에 커널 레벨 동기화 기법이다.
+- 뮤텍스는 위 함수를 호출하는 과정에서 초기화가 이루어지기 때문에 초기화 함수의 호출이 필요가 없다.
+- 커널 오브젝트는 Signaled와 non-Signaled 상태를 지니는데, 보통은 Non-Signaled 상태였다가 특정 상황이 되면 Signaled 상태가 된다.
+- 뮤텍스의 경우 뮤텍스를 반환했을 때 Signaled 상태가 된다.
+- 누군가에 의해 획득이 가능해지면 Signaled 상태가 된다는 의미이다.
+- WaitForsingeObject 함수를 임계 영역 진입을 위한 뮤텍스 획득의 용도로 사용이 가능하다.
+- 뮤텍스 반환 시에는 다음 함수를 사용한다.  
+![image](https://user-images.githubusercontent.com/99636945/210308641-61883931-5513-4730-b13e-e7114b311e34.png)
+- WaitForSingleObject 함수는 인자로 전달된 핸들의 커널 오브젝트가 Signaled 상태가 되어 반환하는 경우 해당 오브젝트를 Non-Signaled 상태로 변경한다.
+![img1 daumcdn](https://user-images.githubusercontent.com/99636945/210308551-38efae77-ec66-4dd8-acd6-86f276815ff6.png)
+- 임계 영역에서 일을 마친 쓰레드가 임계 영역을 빠져나오면서 ReleaseMutex 함수를 호출한다. 
+- 호출되면 뮤텍스는 다른 누군가에게 획득이 가능한 상태, Signaled 상태가 되어서 다른 쓰레드의 진입을 허용한다.
 
+#### 17-3.2 세마포어 기반 동기화
+- 임계영역의 점근 허용 쓰레드 개수를 하나로 제한하기 위해 사용되는 세마포어를 바이너리 세마포어라 하는데 이는 뮤텍스와 동일한 기능을 제공한다.
+- 생성 함수는 다음과 같다.  
+![image](https://user-images.githubusercontent.com/99636945/210309108-c6cdbcef-dd26-455a-a369-af8f11a57c0a.png)
+- 2번째 전달 인자에 의해 초기 카운트가 결정되고, 카운트가 0일 경우 Non-Signaled 상태에 놓이게 되며 1이상인 경우 Signaled상태가 된다.
+- 세마포어 핸들을 인자로 전달하며 WaitForSingleObject 함수를 호출할 경우 그 값이 하나씩 감소하며 함수를 반환한다.
+![img1 daumcdn](https://user-images.githubusercontent.com/99636945/210309228-94872d78-c462-4b00-96f6-3a8f1232f65d.png)
+- WaitForSingleObject 함수를 11번째 호출하면 세마포어 카운트가 0이되며 블로킹 상태가 된다.
+- ReleaseSemaphore 함수는 다음과 같이 구성된다.  
+![image](https://user-images.githubusercontent.com/99636945/210309347-5f5cafe2-d3d7-4168-ac3d-aad78e7ae932.png)
 
+#### 17-3.3 이름있는 뮤텍스 기반의 프로세스 동기화
+- 뮤텍스, 세마포어 오브젝트의 생성함수는 이름을 붙여줄 수 있도록 디자인 되어 있음
+- 이름이 붙은 동기화 오브젝트의 용도는 다음과 같다.
+![image](https://user-images.githubusercontent.com/99636945/210309514-2316efca-30f3-4632-81ca-7c1963a94dbd.png)
+- 아래 사진의 상황에서 이름있는 뮤텍스가 필요하다.
+![img1 daumcdn](https://user-images.githubusercontent.com/99636945/210314785-afe7618e-bcc6-40a5-82b4-6050a36be48a.png)
+![image](https://user-images.githubusercontent.com/99636945/210314841-abedd0c5-177f-4108-9a26-f76cb766f76c.png)
+- OpenMutex라는 함수가 있는데 형태는 다음과 같다.
+![image](https://user-images.githubusercontent.com/99636945/210314938-a6cfb01c-6e38-4419-94a8-a29be47fd3ce.png)
 
 
 
