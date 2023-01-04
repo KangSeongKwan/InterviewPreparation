@@ -178,7 +178,7 @@
 
 ### 4-8. 맵이란?
 - Key 와 Value의 쌍으로 이루어진 자료구조로, Python의 딕셔너리와 같은 구조이다.
-- key와 value가 매칭되는 것을 mapping한다고 일컫는다.
+- key와 value가 매칭되는 것을 mapping한다고 일컫는다.  
 ![image](https://user-images.githubusercontent.com/99636945/209275416-39b9d40b-6331-419e-b1d1-7ac5ca9f15ad.png)
 - key는 중복을 허용하지 않아야 한다. value값에 접근하는 과정에 있어 문제가 발생할 수 있기 때문이다.
 - 순서가 중요하지 않고, 이름과 상응하는 데이터를 묶기 위한 자료구조로써 Map 자료구조가 효과적이다.
